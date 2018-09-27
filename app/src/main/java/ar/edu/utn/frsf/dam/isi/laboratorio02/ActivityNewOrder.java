@@ -102,6 +102,7 @@ public class ActivityNewOrder extends AppCompatActivity {
                 //Control forma entrega
                 if(optEnvio.isChecked() || optRetiro.isChecked()){
                     if(optEnvio.isChecked()){
+                        unPedido.setRetirar(false);
                         //Control Dirección
                         String direccion = edtDireccion.getText().toString();
                         if (direccion.equals("")) {
@@ -111,6 +112,9 @@ public class ActivityNewOrder extends AppCompatActivity {
                         } else {
                             unPedido.setDireccionEnvio(direccion);
                         }
+                    }
+                    if(optRetiro.isChecked()) {
+                        unPedido.setRetirar(true);
                     }
                 } else {
                     Toast.makeText(ActivityNewOrder.this,"Debe seleccionar una forma de entrega", Toast.LENGTH_LONG).show();
@@ -154,6 +158,9 @@ public class ActivityNewOrder extends AppCompatActivity {
                 unPedido.setEstado(Pedido.Estado.REALIZADO);
 
                 repositorioPedido.guardarPedido(unPedido);
+
+                Intent i = new Intent(ActivityNewOrder.this, ActivityHistory.class);
+                startActivity(i);
             }
         });
     }

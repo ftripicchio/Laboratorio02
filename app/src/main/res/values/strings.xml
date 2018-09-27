@@ -15,4 +15,8 @@
     <string name="pedido_lbl_hacer_pedido">Hacer pedido</string>
     <string name="pedido_lbl_volver">Volver</string>
 
+    <string name="historial_lbl_titulo">Pedidos Realizados</string>
+    <string name="historial_lbl_nuevo">Nuevo</string>
+    <string name="historial_lbl_menu">Menu</string>
+
 </resources>
