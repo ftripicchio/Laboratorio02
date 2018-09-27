@@ -1,5 +1,6 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,10 +75,17 @@ public class ActivityProductList extends AppCompatActivity{
         btnAgregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String cantidad = edtCantidad.getText().toString();
+                Integer cantidad = Integer.valueOf(edtCantidad.getText().toString());
+                if(cantidad <= 0){
+                    Toast.makeText(ActivityProductList.this,"La cantidad debe ser mayor a 0", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 i.putExtra("cantidad", cantidad);
                 Integer idProducto = productoSeleccionado.getId();
                 i.putExtra("idProducto",idProducto);
+
+                setResult(Activity.RESULT_OK,i);
+                finish();
             }
         });
 
