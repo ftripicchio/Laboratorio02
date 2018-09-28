@@ -1,6 +1,7 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +51,15 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
                 }
             });
 
+            holder.btnVerDetalle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(ctx, ActivityNewOrder.class);
+                    i.putExtra("idPedidoSeleccionado", (int) v.getTag());
+                    ctx.startActivity(i);
+                }
+            });
+
             filaHistorial.setTag(holder);
         }
 
@@ -91,6 +101,7 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
         }
 
         holder.btnCancelar.setTag(position);
+        holder.btnVerDetalle.setTag(pedido.getId());
 
         return filaHistorial;
     }

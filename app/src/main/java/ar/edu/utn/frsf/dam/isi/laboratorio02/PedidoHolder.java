@@ -14,6 +14,7 @@ public class PedidoHolder {
     public TextView estado;
     public ImageView tipoEntrega;
     public Button btnCancelar;
+    public Button btnVerDetalle;
 
     PedidoHolder(View base) {
         tvMailPedido = base.findViewById(R.id.historialContacto);
@@ -23,6 +24,7 @@ public class PedidoHolder {
         estado = base.findViewById(R.id.historialEstado);
         tipoEntrega = base.findViewById(R.id.historialTipoEntrega);
         btnCancelar = base.findViewById(R.id.btnHistorialCancelar);
+        btnVerDetalle = base.findViewById(R.id.btnHistorialVerDetalle);
     }
 
 }

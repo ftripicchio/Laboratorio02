@@ -25,7 +25,8 @@ public class ActivityHistory extends AppCompatActivity {
         btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Intent i = new Intent(ActivityHistory.this, MainActivity.class);
+                startActivity(i);
             }
         });
 

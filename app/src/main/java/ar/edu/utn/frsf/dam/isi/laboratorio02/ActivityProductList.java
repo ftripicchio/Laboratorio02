@@ -30,6 +30,7 @@ public class ActivityProductList extends AppCompatActivity{
     private EditText edtCantidad;
     private Button btnAgregar;
     private Intent i;
+    int nuevoPedido = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,6 @@ public class ActivityProductList extends AppCompatActivity{
         setContentView(R.layout.activity_product_list);
         i = getIntent();
         Bundle extras = i.getExtras();
-        int nuevoPedido=0;
         if(extras!=null){
             nuevoPedido = extras.getInt("NUEVO_PEDIDO");
         }
@@ -52,7 +52,7 @@ public class ActivityProductList extends AppCompatActivity{
         productos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                btnAgregar.setEnabled(true);
+                if(nuevoPedido == 1) btnAgregar.setEnabled(true);
                 productoSeleccionado = (Producto) productos.getItemAtPosition(position);
             }
         });
