@@ -1,7 +1,9 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -214,14 +216,19 @@ public class ActivityNewOrder extends AppCompatActivity {
                             for(Pedido p:lista){
                                 if(p.getEstado().equals(Pedido.Estado.REALIZADO))
                                     p.setEstado(Pedido.Estado.ACEPTADO);
-                            }
+
+                                Intent i = new Intent();
+                                i.putExtra("idPedido",p.getId());
+                                i.setAction("ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_ACEPTADO");
+                                sendBroadcast(i);
+                            }/*
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     Toast.makeText(ActivityNewOrder.this, "Informacion de pedidos actualizada!",
                                     Toast.LENGTH_LONG).show();
                                 }
-                            });
+                            });*/
                         }
                     };
                     Thread unHilo = new Thread(r);
