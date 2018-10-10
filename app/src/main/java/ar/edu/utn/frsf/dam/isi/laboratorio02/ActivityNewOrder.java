@@ -1,7 +1,9 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
@@ -88,6 +91,8 @@ public class ActivityNewOrder extends AppCompatActivity {
             itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice, unPedido.getDetalle());
             items.setAdapter(itemsAdapter);
             items.setEnabled(false);
+            Double total = calcularTotal(unPedido);
+            totalPedido.setText("Total del pedido: $" + total);
             agregarProducto.setEnabled(false);
             hacerPedido.setEnabled(false);
             quitarProducto.setEnabled(false);
@@ -196,7 +201,41 @@ public class ActivityNewOrder extends AppCompatActivity {
 
                     unPedido.setEstado(Pedido.Estado.REALIZADO);
 
+                    //Hacer Pedido
+
                     repositorioPedido.guardarPedido(unPedido);
+
+                    Runnable r = new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.currentThread().sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            // buscar pedidos no aceptados y aceptarlos utomáticamente
+                            List<Pedido> lista = repositorioPedido.getLista();
+                            for(Pedido p:lista){
+                                if(p.getEstado().equals(Pedido.Estado.REALIZADO))
+                                    p.setEstado(Pedido.Estado.ACEPTADO);
+
+                                Intent i = new Intent();
+                                i.putExtra("idPedido",p.getId());
+                                i.setAction("ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_ACEPTADO");
+                                sendBroadcast(i);
+                            }/*
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(ActivityNewOrder.this, "Informacion de pedidos actualizada!",
+                                    Toast.LENGTH_LONG).show();
+                                }
+                            });*/
+                        }
+                    };
+                    Thread unHilo = new Thread(r);
+                    unHilo.start();
+
 
                     Intent i = new Intent(ActivityNewOrder.this, ActivityHistory.class);
                     startActivity(i);
