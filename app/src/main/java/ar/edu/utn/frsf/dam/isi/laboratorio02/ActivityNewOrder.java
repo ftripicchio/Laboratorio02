@@ -91,6 +91,8 @@ public class ActivityNewOrder extends AppCompatActivity {
             itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice, unPedido.getDetalle());
             items.setAdapter(itemsAdapter);
             items.setEnabled(false);
+            Double total = calcularTotal(unPedido);
+            totalPedido.setText("Total del pedido: $" + total);
             agregarProducto.setEnabled(false);
             hacerPedido.setEnabled(false);
             quitarProducto.setEnabled(false);

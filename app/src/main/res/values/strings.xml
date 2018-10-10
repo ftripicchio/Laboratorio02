@@ -18,5 +18,7 @@
     <string name="historial_lbl_titulo">Pedidos Realizados</string>
     <string name="historial_lbl_nuevo">Nuevo</string>
     <string name="historial_lbl_menu">Menu</string>
+    <string name="canal_estado_descr">placeholder estado descr</string>
+    <string name="canal_estado_nombre">placeholder estado nombre</string>
 
 </resources>
