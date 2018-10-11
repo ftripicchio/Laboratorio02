@@ -41,6 +41,27 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
             notificationManager.notify(1, notification);
         }
+        if (intent.getAction() == "ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_EN_PREPARACION"){
+            int idPedido = intent.getExtras().getInt("idPedido");
+            Pedido p = pedidoRepository.buscarPorId(idPedido);
+
+            Intent pedidoDetalleIntent = new Intent(context, ActivityNewOrder.class);
+            pedidoDetalleIntent.putExtra("idPedidoSeleccionado", idPedido);
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+            stackBuilder.addNextIntentWithParentStack(pedidoDetalleIntent);
+            PendingIntent pedidoDetallePendingIntent = stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+
+            Notification notification = new NotificationCompat.Builder(context, "CANAL01")
+                    .setSmallIcon(R.drawable.envio)
+                    .setContentTitle("Tu Pedido está siendo preparado")
+                    .setStyle(new NotificationCompat.BigTextStyle()
+                            .bigText("El costo será de $" + calcularTotal(p) +
+                                    "\nPrevisto el envío para " + p.getFecha().getHours() + ":" + p.getFecha().getMinutes()))
+                    .setContentIntent(pedidoDetallePendingIntent)
+                    .build();
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+            notificationManager.notify(1, notification);
+        }
     }
 
     private Double calcularTotal(Pedido pedido) {
