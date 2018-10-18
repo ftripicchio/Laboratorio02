@@ -69,7 +69,7 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         holder.tvHoraEntrega.setText("Fecha de Entrega: " + sdf.format(pedido.getFecha()));
         holder.tvCantidadItems.setText("Items: " + pedido.getDetalle().size());
-        holder.tvPrecio.setText("  A pagar: $" + calcularTotal(pedido));
+        holder.tvPrecio.setText("  A pagar: $" + pedido.total());
         holder.estado.setText("Estado: " + pedido.getEstado());
 
         if(pedido.getRetirar()){
@@ -104,13 +104,5 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
         holder.btnVerDetalle.setTag(pedido.getId());
 
         return filaHistorial;
-    }
-
-    private Double calcularTotal(Pedido pedido) {
-        Double total = 0.0;
-        for (PedidoDetalle pedidoDetalle : pedido.getDetalle()) {
-            total += pedidoDetalle.getCantidad() * pedidoDetalle.getProducto().getPrecio();
-        }
-        return total;
     }
 }
