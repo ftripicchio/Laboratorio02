@@ -91,7 +91,7 @@ public class ActivityNewOrder extends AppCompatActivity {
             itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice, unPedido.getDetalle());
             items.setAdapter(itemsAdapter);
             items.setEnabled(false);
-            Double total = calcularTotal(unPedido);
+            Double total = unPedido.total();
             totalPedido.setText("Total del pedido: $" + total);
             agregarProducto.setEnabled(false);
             hacerPedido.setEnabled(false);
@@ -257,16 +257,8 @@ public class ActivityNewOrder extends AppCompatActivity {
             itemsAdapter.addAll(unPedido.getDetalle());
             itemsAdapter.notifyDataSetChanged();
 
-            Double total = calcularTotal(unPedido);
+            Double total = unPedido.total();
             totalPedido.setText("Total del pedido: $" + total);
         }
-    }
-
-    private Double calcularTotal(Pedido pedido) {
-        Double total = 0.0;
-        for(PedidoDetalle pedidoDetalle : pedido.getDetalle()){
-            total += pedidoDetalle.getCantidad() * pedidoDetalle.getProducto().getPrecio();
-        }
-        return total;
     }
 }
