@@ -3,6 +3,7 @@ package ar.edu.utn.frsf.dam.isi.laboratorio02;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -11,11 +12,9 @@ import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
 public class RestoMessagingService extends FirebaseMessagingService {
-    public RestoMessagingService() {
-        super();
-    }
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        Log.d("mensaje","mensaje");
         if (remoteMessage.getData().size() > 0) {
             int idPedido = Integer.valueOf(remoteMessage.getData().get("ID_PEDIDO"));
             String estado = remoteMessage.getData().get("NUEVO_ESTADO");
