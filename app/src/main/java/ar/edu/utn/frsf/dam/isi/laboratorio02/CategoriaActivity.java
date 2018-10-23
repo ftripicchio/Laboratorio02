@@ -10,7 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
@@ -18,8 +20,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.CategoriaRest;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
@@ -41,15 +45,22 @@ public class CategoriaActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
-                            categoriaRest.crearCategoria(new Categoria(textoCat.getText().toString()), CategoriaActivity.this);
+                            categoriaRest.crearCategoria(new Categoria(textoCat.getText().toString()));
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     Toast.makeText(CategoriaActivity.this, "Nueva Categoría creada con éxito",
                                     Toast.LENGTH_LONG).show();
                                 }
-                            });}catch (Exception e){
-                            e.printStackTrace();
+                            });
+                        }catch (Exception e){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(CategoriaActivity.this, "Ocurrió un error al conectarse al servidor",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            });
                         }
                     }
                 };
@@ -65,71 +76,6 @@ public class CategoriaActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-    }
-
-    public static class CategoriaRest {
-        // realiza el POST de una categoría al servidor REST
-        public void crearCategoria(Categoria c, Context context) throws Exception{
-            //Variables de conexión y stream de escritura y lectura
-            HttpURLConnection urlConnection = null;
-            DataOutputStream printout =null;
-            InputStream in =null;
-            //Crear el objeto json que representa una categoria
-            JSONObject categoriaJson = new JSONObject();
-            categoriaJson.put("nombre",c.getNombre());
-            Log.d("DEBUG", "JSON creado");
-            //Abrir una conexión al servidor para enviar el POST
-            URL url = new URL("http://10.0.2.2:4000/categorias");
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setChunkedStreamingMode(0);
-            urlConnection.setRequestProperty("Content-Type","application/json");
-            urlConnection.setDoOutput(true);
-            urlConnection.setRequestMethod("POST");
-            Log.d("DEBUG", "Conectado al servidor");
-            //Obtener el outputStream para escribir el JSON
-            printout = new DataOutputStream(urlConnection.getOutputStream());
-            String str = categoriaJson.toString();
-            byte[] jsonData=str.getBytes("UTF-8");
-            printout.write(jsonData);
-            printout.flush();
-            Log.d("DEBUG", "Escribir al servidor");
-            //Leer la respuesta
-            in = new BufferedInputStream(urlConnection.getInputStream());
-            InputStreamReader isw = new InputStreamReader(in);
-            StringBuilder sb = new StringBuilder();
-            int data = isw.read();
-            Log.d("DEBUG", "Leer Respuesta");
-            //Analizar el codigo de lar respuesta
-            if( urlConnection.getResponseCode() ==200 ||
-                    urlConnection.getResponseCode()==201){
-                while (data != -1) {
-                    char current = (char) data;
-                    sb.append(current);
-                            data = isw.read();
-                }
-                //analizar los datos recibidos
-                Log.d("LAB_04",sb.toString());
-            }else{
-                Toast.makeText(context, "No se pudo conectar al servidor", Toast.LENGTH_LONG).show();
-            }
-            // caputurar todas las excepciones y en el bloque finally
-            // cerrar todos los streams y HTTPUrlCOnnection
-            if(printout!=null) {
-                try {
-                    printout.close();
-                } catch (Exception e){
-                  e.printStackTrace();
-                }
-            }
-            if(in!=null) {
-                try {
-                in.close();
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-            if(urlConnection !=null)urlConnection.disconnect();
-        }
     }
 }
 
