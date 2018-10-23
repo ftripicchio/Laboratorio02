@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -97,9 +99,18 @@ public class ActivityNewOrder extends AppCompatActivity {
             hacerPedido.setEnabled(false);
             quitarProducto.setEnabled(false);
         }else {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            String correo = sharedPreferences.getString("correo","");
+            Boolean retiro = sharedPreferences.getBoolean("retiro",false);
+
             unPedido = new Pedido();
 
-            edtDireccion.setEnabled(false);
+            editCorreo.setText(correo);
+            optRetiro.setChecked(retiro);
+            optEnvio.setChecked(!retiro);
+
+            if(retiro) edtDireccion.setEnabled(false);
+            else edtDireccion.setEnabled(true);
 
             radioGroupEnvio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
