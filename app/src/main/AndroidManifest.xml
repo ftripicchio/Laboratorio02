@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ar.edu.utn.frsf.dam.isi.laboratorio02">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
     <meta-data
         android:name="com.google.firebase.messaging.default_notification_channel_id"
         android:value="CANAL01" />
@@ -12,7 +15,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -57,7 +61,8 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".ConfiguracionActivity"></activity>
+        <activity android:name=".ConfiguracionActivity" />
+        <activity android:name=".CategoriaActivity"></activity>
     </application>
 
 </manifest>
