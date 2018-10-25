@@ -17,13 +17,20 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.CategoriaRest;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRetrofit;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.RestClient;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ActivityProductList extends AppCompatActivity{
 
     private ProductoRepository productoRepository = new ProductoRepository();
+    private CategoriaRest categoriaRest = new CategoriaRest();
     private Producto productoSeleccionado;
     private Spinner categorias;
     private ListView productos;
@@ -31,6 +38,9 @@ public class ActivityProductList extends AppCompatActivity{
     private Button btnAgregar;
     private Intent i;
     int nuevoPedido = 0;
+    List<Categoria> listaCategorias;
+    List<Producto> listaProductos;
+    ArrayAdapter<Producto> productAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,30 +53,68 @@ public class ActivityProductList extends AppCompatActivity{
         }
 
         categorias = findViewById(R.id.cmbProductosCategoria);
-        ArrayAdapter<Categoria> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, productoRepository.getCategorias() );
-        categorias.setAdapter(categoryAdapter);
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    listaCategorias = categoriaRest.listarTodas();
+                    ArrayAdapter<Categoria> categoryAdapter = new ArrayAdapter<>(ActivityProductList.this, android.R.layout.simple_spinner_item, listaCategorias);
+                    categorias.setAdapter(categoryAdapter);
+                }catch (Exception e){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(ActivityProductList.this, "Error al cargar categorías",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+                ProductoRetrofit clienteRest =
+                        RestClient.getInstance()
+                                .getRetrofit()
+                                .create(ProductoRetrofit.class);
+                Call<List<Producto>> altaCall= clienteRest.listarProductos();
+                altaCall.enqueue(new Callback<List<Producto>>() {
+                    @Override
+                    public void onResponse(Call<List<Producto>> call,
+                                           Response<List<Producto>> resp) {
+                        listaProductos = resp.body();
+                        Log.d("Lista de productos", listaProductos.toString());
+                    }
+                    @Override
+                    public void onFailure(Call<List<Producto>> call, Throwable t) {
+                        Toast.makeText(ActivityProductList.this, "Error al cargar productos",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                categorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        productAdapter.clear();
+                        productAdapter.addAll(filtrarProductos(listaProductos, (Categoria) categorias.getSelectedItem()));
+                        //productAdapter.addAll(productoRepository.buscarPorCategoria((Categoria) categorias.getSelectedItem()));
+                        productAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
+                });
+            }
+        };
+        Thread unHilo = new Thread(r);
+        unHilo.start();
 
         productos = findViewById(R.id.lstProductos);
-        final ArrayAdapter<Producto> productAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice, new ArrayList<Producto>() );
+        productAdapter = new ArrayAdapter<>(ActivityProductList.this, android.R.layout.simple_list_item_single_choice, new ArrayList<Producto>() );
         productos.setAdapter(productAdapter);
         productos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(nuevoPedido == 1) btnAgregar.setEnabled(true);
                 productoSeleccionado = (Producto) productos.getItemAtPosition(position);
-            }
-        });
-
-        categorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                productAdapter.clear();
-                productAdapter.addAll(productoRepository.buscarPorCategoria((Categoria) categorias.getSelectedItem()));
-                productAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
@@ -97,5 +145,15 @@ public class ActivityProductList extends AppCompatActivity{
             btnAgregar.setEnabled(false);
         }
 
+    }
+
+    private List<Producto> filtrarProductos(List<Producto> productos, Categoria categoria) {
+        List<Producto> retorno = new ArrayList<>();
+        for (Producto producto : productos){
+            if(producto.getCategoria().getId() == categoria.getId()){
+                retorno.add(producto);
+            }
+        }
+        return retorno;
     }
 }
