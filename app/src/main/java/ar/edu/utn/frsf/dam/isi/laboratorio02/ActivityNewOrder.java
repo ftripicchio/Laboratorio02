@@ -28,9 +28,14 @@ import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRetrofit;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.RestClient;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ActivityNewOrder extends AppCompatActivity {
 
@@ -259,17 +264,33 @@ public class ActivityNewOrder extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == 1 && resultCode == Activity.RESULT_OK){
             Integer idProducto = data.getExtras().getInt("idProducto");
-            Integer cantidad = data.getExtras().getInt("cantidad");
-            Producto producto = repositorioProducto.buscarPorId(idProducto);
-            PedidoDetalle pedidoDetalle = new PedidoDetalle(cantidad, producto);
-            pedidoDetalle.setPedido(unPedido);
+            final Integer cantidad = data.getExtras().getInt("cantidad");
+            ProductoRetrofit clienteRest =
+                    RestClient.getInstance()
+                            .getRetrofit()
+                            .create(ProductoRetrofit.class);
+            Call<Producto> altaCall= clienteRest.buscarProductoPorId(idProducto);
+            altaCall.enqueue(new Callback<Producto>() {
+                @Override
+                public void onResponse(Call<Producto> call,
+                                       Response<Producto> resp) {
+                    Producto producto = resp.body();
+                    PedidoDetalle pedidoDetalle = new PedidoDetalle(cantidad, producto);
+                    pedidoDetalle.setPedido(unPedido);
 
-            itemsAdapter.clear();
-            itemsAdapter.addAll(unPedido.getDetalle());
-            itemsAdapter.notifyDataSetChanged();
+                    itemsAdapter.clear();
+                    itemsAdapter.addAll(unPedido.getDetalle());
+                    itemsAdapter.notifyDataSetChanged();
 
-            Double total = unPedido.total();
-            totalPedido.setText("Total del pedido: $" + total);
+                    Double total = unPedido.total();
+                    totalPedido.setText("Total del pedido: $" + total);
+                }
+                @Override
+                public void onFailure(Call<Producto> call, Throwable t) {
+                }
+            });
+
+
         }
     }
 }

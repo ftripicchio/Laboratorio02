@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ar.edu.utn.frsf.dam.isi.laboratorio02">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <meta-data
         android:name="com.google.firebase.messaging.default_notification_channel_id"
@@ -62,7 +62,8 @@
         </service>
 
         <activity android:name=".ConfiguracionActivity" />
-        <activity android:name=".CategoriaActivity"></activity>
+        <activity android:name=".CategoriaActivity" />
+        <activity android:name=".GestionProductoActivity"></activity>
     </application>
 
 </manifest>

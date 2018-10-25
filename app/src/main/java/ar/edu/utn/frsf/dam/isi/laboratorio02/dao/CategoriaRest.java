@@ -29,7 +29,7 @@ public class CategoriaRest {
         categoriaJson.put("nombre", c.getNombre());
         Log.d("DEBUG", "JSON creado");
         //Abrir una conexión al servidor para enviar el POST
-        URL url = new URL("http://10.0.2.2:4000/categorias");
+        URL url = new URL("http://10.0.2.2:5000/categorias");
         urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setChunkedStreamingMode(0);
         urlConnection.setRequestProperty("Content-Type", "application/json");
@@ -87,7 +87,7 @@ public class CategoriaRest {
         HttpURLConnection urlConnection = null;
         InputStream in = null;
         // GESTIONAR LA CONEXION
-        URL url = new URL("http://10.0.2.2:4000/categorias");
+        URL url = new URL("http://10.0.2.2:5000/categorias");
         urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setRequestProperty("Accept-Type", "application/json");
         urlConnection.setRequestMethod("GET");
