@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnPrepararPedidos;
     private Button btnConfiguracion;
     private Button btnCategorias;
+    private Button btnProductos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +70,21 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         btnCategorias= (Button)findViewById(R.id.btnCategorias);
         btnCategorias.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, CategoriaActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnProductos= (Button)findViewById(R.id.btnProductos);
+        btnProductos.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, GestionProductoActivity.class);
                 startActivity(intent);
             }
         });
