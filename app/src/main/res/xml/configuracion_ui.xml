@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:key="retiro"
+        android:title="Retirar por defecto"
+        android:summaryOn="El pedido es para retirar"
+        android:summaryOff="El pedido se enviará a domicilio"
+        />
+    <EditTextPreference
+        android:key="correo"
+        android:title="Correo electrónico"
+        android:summary="Se usará por defecto"
+        />
+
+
+</PreferenceScreen>
