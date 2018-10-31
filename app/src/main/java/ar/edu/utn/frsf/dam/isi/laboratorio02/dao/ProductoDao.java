@@ -14,7 +14,7 @@ import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 @Dao
 public interface ProductoDao {
     @Query("SELECT * FROM Producto")
-    List<Categoria> getAll();
+    List<Producto> getAll();
 
     @Insert
     long insert(Producto prod);

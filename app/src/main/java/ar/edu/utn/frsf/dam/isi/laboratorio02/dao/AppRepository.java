@@ -6,12 +6,17 @@ import android.content.Context;
 import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoConDetalles;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
 public class AppRepository {
     private static AppRepository _REPO = null;
     private CategoriaDao categoriaDao;
     private ProductoDao productoDao;
+    private PedidoDao pedidoDao;
+    private PedidoDetalleDao pedidoDetalleDao;
 
     private AppRepository(Context ctx) {
         AppDatabase db = Room.databaseBuilder(ctx,
@@ -19,6 +24,8 @@ public class AppRepository {
                 .build();
         categoriaDao = db.categoriaDao();
         productoDao = db.productoDao();
+        pedidoDao = db.pedidoDao();
+        pedidoDetalleDao = db.pedidoDetalleDao();
     }
 
     public static AppRepository getInstance(Context ctx) {
@@ -45,10 +52,39 @@ public class AppRepository {
     public void actualizarProducto(Producto p){
         productoDao.update(p);
     }
-    public List<Categoria> getAllProductos(){
+    public List<Producto> getAllProductos(){
         return productoDao.getAll();
     }
     public void eliminarProducto(Producto p){
         productoDao.delete(p);
+    }
+
+    public void crearPedido(Pedido p){
+        pedidoDao.insert(p);
+    }
+    public void actualizarPedido(Pedido p){
+        pedidoDao.update(p);
+    }
+    public List<Pedido> getAllPedidos(){
+        return pedidoDao.getAll();
+    }
+    public void eliminarPedido(Pedido p){
+        pedidoDao.delete(p);
+    }
+    public List<PedidoConDetalles> getPedidoConDetalle(long idPedido){
+        return pedidoDao.buscarPorIdConDetalle(idPedido);
+    }
+
+    public void crearPedidoDetalle(PedidoDetalle pd){
+        pedidoDetalleDao.insert(pd);
+    }
+    public void actualizarPedidoDetalle(PedidoDetalle pd){
+        pedidoDetalleDao.update(pd);
+    }
+    public List<PedidoDetalle> getAllPedidoDetalle(){
+        return pedidoDetalleDao.getAll();
+    }
+    public void eliminarPedidoDetalle(PedidoDetalle pd){
+        pedidoDetalleDao.delete(pd);
     }
 }
