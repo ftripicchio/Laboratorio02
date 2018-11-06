@@ -15,17 +15,17 @@ public class PedidoRepository {
     }
 
     public void guardarPedido(Pedido p){
-        if(p.getId()!=null && p.getId()>0) {
+        if(p.getIdPedido()!=null && p.getIdPedido()>0) {
             LISTA_PEDIDOS.remove(p);
         }else{
-            p.setId(GENERADOR_ID_PEDIDO ++);
+            p.setIdPedido(GENERADOR_ID_PEDIDO ++);
         }
         LISTA_PEDIDOS.add(p);
     }
 
     public Pedido buscarPorId(Integer id){
         for(Pedido p: LISTA_PEDIDOS){
-            if(p.getId().equals(id)) return p;
+            if(p.getIdPedido().equals(id)) return p;
         }
         return null;
     }

@@ -7,16 +7,20 @@ import android.os.IBinder;
 
 import java.util.List;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.AppRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
 public class PrepararPedidoService extends IntentService {
+    AppRepository appRepository;
+
     public PrepararPedidoService() {
         super("PrepararPedidoService");
     }
 
     @Override
     protected void onHandleIntent(Intent intent){
+        appRepository = AppRepository.getInstance(this);
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -26,14 +30,15 @@ public class PrepararPedidoService extends IntentService {
                     e.printStackTrace();
                 }
                 // buscar pedidos aceptados y prepararlos
-                PedidoRepository repositorioPedido = new PedidoRepository();
-                List<Pedido> lista = repositorioPedido.getLista();
+
+                List<Pedido> lista = appRepository.getAllPedidos();
                 for(Pedido p:lista){
                     if(p.getEstado().equals(Pedido.Estado.ACEPTADO))
                         p.setEstado(Pedido.Estado.EN_PREPARACION);
+                        appRepository.actualizarPedido(p);
 
                     Intent i = new Intent();
-                    i.putExtra("idPedido",p.getId());
+                    i.putExtra("idPedido",p.getIdPedido());
                     i.setAction("ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_EN_PREPARACION");
                     sendBroadcast(i);
                 }

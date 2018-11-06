@@ -13,18 +13,22 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.AppRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoConDetalles;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
 
 public class PedidoAdapter extends ArrayAdapter<Pedido> {
 
     private Context ctx;
     private List<Pedido> datos;
+    private AppRepository appRepository;
 
     public PedidoAdapter(Context context, List<Pedido> objects) {
         super(context, 0, objects);
         this.ctx = context;
         this.datos = objects;
+        appRepository = AppRepository.getInstance(context);
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -40,13 +44,21 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
                 @Override
                 public void onClick(View v) {
                     int indice = (int) v.getTag();
-                    Pedido pedidoSeleccionado = datos.get(indice);
+                    final Pedido pedidoSeleccionado = datos.get(indice);
                     if( pedidoSeleccionado.getEstado().equals(Pedido.Estado.REALIZADO)||
                             pedidoSeleccionado.getEstado().equals(Pedido.Estado.ACEPTADO)||
                             pedidoSeleccionado.getEstado().equals(Pedido.Estado.EN_PREPARACION)){
                         pedidoSeleccionado.setEstado(Pedido.Estado.CANCELADO);
                         PedidoAdapter.this.notifyDataSetChanged();
-                        return;
+
+                        Runnable r1 = new Runnable() {
+                            @Override
+                            public void run() {
+                                appRepository.actualizarPedido(pedidoSeleccionado);
+                            }
+                        };
+                        Thread t1 = new Thread(r1);
+                        t1.start();
                     }
                 }
             });
@@ -101,7 +113,7 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
         }
 
         holder.btnCancelar.setTag(position);
-        holder.btnVerDetalle.setTag(pedido.getId());
+        holder.btnVerDetalle.setTag(pedido.getIdPedido());
 
         return filaHistorial;
     }
