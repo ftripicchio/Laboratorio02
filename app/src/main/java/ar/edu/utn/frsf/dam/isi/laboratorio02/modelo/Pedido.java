@@ -74,11 +74,11 @@ public class Pedido {
         this.estado = estado;
     }
 
-    public Integer getId() {
+    public Integer getIdPedido() {
         return idPedido;
     }
 
-    public void setId(Integer idPedido) {
+    public void setIdPedido(Integer idPedido) {
         this.idPedido = idPedido;
     }
 

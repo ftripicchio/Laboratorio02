@@ -24,4 +24,7 @@ public interface ProductoDao {
 
     @Delete
     void delete(Producto prod);
+
+    @Query("SELECT * FROM Producto WHERE id = :idProducto")
+    List<Producto> buscarProductoPorId (long idProducto);
 }

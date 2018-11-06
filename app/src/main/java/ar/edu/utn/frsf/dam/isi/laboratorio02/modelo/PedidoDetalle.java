@@ -9,7 +9,7 @@ public class PedidoDetalle {
 
     private static int ID_DETALLE =1;
     @PrimaryKey(autoGenerate = true)
-    private Integer id_detalle;
+    private Integer idDetalle;
     private Integer cantidad;
     @Embedded
     private Producto producto;
@@ -19,17 +19,16 @@ public class PedidoDetalle {
     public PedidoDetalle(){}
 
     public PedidoDetalle(Integer cantidad, Producto producto) {
-        id=ID_DETALLE++;
         this.cantidad = cantidad;
         this.producto = producto;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getIdDetalle() {
+        return idDetalle;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIdDetalle(Integer idDetalle) {
+        this.idDetalle = idDetalle;
     }
 
     public Integer getCantidad() {

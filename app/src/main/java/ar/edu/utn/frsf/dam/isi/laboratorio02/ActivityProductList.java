@@ -17,6 +17,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.AppRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.CategoriaRest;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRetrofit;
@@ -41,11 +42,14 @@ public class ActivityProductList extends AppCompatActivity{
     List<Categoria> listaCategorias;
     List<Producto> listaProductos;
     ArrayAdapter<Producto> productAdapter;
+    AppRepository appRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
+        appRepository = AppRepository.getInstance(this);
+
         i = getIntent();
         Bundle extras = i.getExtras();
         if(extras!=null){
@@ -56,21 +60,13 @@ public class ActivityProductList extends AppCompatActivity{
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                try {
-                    listaCategorias = categoriaRest.listarTodas();
-                    ArrayAdapter<Categoria> categoryAdapter = new ArrayAdapter<>(ActivityProductList.this, android.R.layout.simple_spinner_item, listaCategorias);
-                    categorias.setAdapter(categoryAdapter);
-                }catch (Exception e){
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(ActivityProductList.this, "Error al cargar categorías",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
+                listaCategorias = appRepository.getAllCategorias();
+                ArrayAdapter<Categoria> categoryAdapter = new ArrayAdapter<>(ActivityProductList.this, android.R.layout.simple_spinner_item, listaCategorias);
+                categorias.setAdapter(categoryAdapter);
 
-                ProductoRetrofit clienteRest =
+                listaProductos = appRepository.getAllProductos();
+
+                /*ProductoRetrofit clienteRest =
                         RestClient.getInstance()
                                 .getRetrofit()
                                 .create(ProductoRetrofit.class);
@@ -87,7 +83,7 @@ public class ActivityProductList extends AppCompatActivity{
                         Toast.makeText(ActivityProductList.this, "Error al cargar productos",
                                 Toast.LENGTH_LONG).show();
                     }
-                });
+                });*/
 
                 categorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override

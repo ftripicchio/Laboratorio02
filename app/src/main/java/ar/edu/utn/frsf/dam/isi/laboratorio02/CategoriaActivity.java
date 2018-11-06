@@ -49,7 +49,6 @@ public class CategoriaActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         appRepository.crearCategoria(new Categoria(textoCat.getText().toString()));
-                        Log.d("categorias", appRepository.getAllCategorias().toString());
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

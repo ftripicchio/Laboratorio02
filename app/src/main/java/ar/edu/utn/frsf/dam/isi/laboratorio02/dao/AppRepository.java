@@ -58,9 +58,10 @@ public class AppRepository {
     public void eliminarProducto(Producto p){
         productoDao.delete(p);
     }
+    public List<Producto> buscarProductoPorId (long idProducto){ return productoDao.buscarProductoPorId(idProducto);}
 
-    public void crearPedido(Pedido p){
-        pedidoDao.insert(p);
+    public long crearPedido(Pedido p){
+        return pedidoDao.insert(p);
     }
     public void actualizarPedido(Pedido p){
         pedidoDao.update(p);
@@ -68,11 +69,15 @@ public class AppRepository {
     public List<Pedido> getAllPedidos(){
         return pedidoDao.getAll();
     }
+    public List<Pedido> buscarPedidoPorId(long id) {return pedidoDao.buscarPorId(id);}
     public void eliminarPedido(Pedido p){
         pedidoDao.delete(p);
     }
     public List<PedidoConDetalles> getPedidoConDetalle(long idPedido){
         return pedidoDao.buscarPorIdConDetalle(idPedido);
+    }
+    public List<PedidoConDetalles> getPedidosConDetalle(){
+        return pedidoDao.buscarTodosConDetalle();
     }
 
     public void crearPedidoDetalle(PedidoDetalle pd){
